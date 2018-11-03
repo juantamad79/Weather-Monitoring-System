@@ -1,5 +1,7 @@
 #include <LiquidCrystal.h>
-LiquidCrystal lcd(4, 5, 0, 1, 2, 3);
+LiquidCrystal lcd(4, 5, 8, 9, 2, 3);
+// Note: 16x2 LCD takes about 30mA power
+
 byte degree_symbol[8] = 
               {
                 0b00111,
@@ -19,19 +21,24 @@ unsigned char value=0;
 unsigned answer=0;
 int z=0;
 int b=1;
+int debug = 0;
 void setup() 
 {
-
-lcd.begin(16, 2);
- lcd.print("Temp = ");
- lcd.setCursor(0,1);
- lcd.print("Humidity = ");
- lcd.createChar(1, degree_symbol);
- lcd.setCursor(9,0);
- lcd.write(1);
- lcd.print("C");
- lcd.setCursor(13,1);
- lcd.print("%");
+ if (debug){
+  Serial.begin(9600);
+  Serial.println("");
+ }else {
+   lcd.begin(16, 2);
+   lcd.print("Temp = ");
+   lcd.setCursor(0,1);
+   lcd.print("Humidity = ");
+   lcd.createChar(1, degree_symbol);
+   lcd.setCursor(9,0);
+   lcd.write(1);
+   lcd.print("C");
+   lcd.setCursor(13,1);
+   lcd.print("%");
+ }
 }
 
 void loop() 
@@ -74,13 +81,22 @@ answer=i[0]+i[1]+i[2]+i[3];
 
 if(answer==i[4] && answer!=0)
 {
-lcd.setCursor(7,0);
-lcd.print(i[2]);
-lcd.setCursor(11,1);
-lcd.print(i[0]);
+  if (debug==0){
+    lcd.setCursor(7,0);
+    lcd.print(i[2]);
+    lcd.setCursor(11,1);
+    lcd.print(i[0]);
+  }
+  if (debug){ 
+   Serial.print("Temp = ");
+   Serial.println(i[2]);
+   Serial.print("Humidity= ");
+   Serial.println(i[0]);
+  }
 }
 
 z=0;
 i[0]=i[1]=i[2]=i[3]=i[4]=0;
  }
 }
+
